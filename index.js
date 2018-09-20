@@ -169,9 +169,9 @@ class TiltHydrometer {
                 call.options = Object.assign({debug:true}, call.options);
                 this.log(call);
 
-                var request = new Request();
+                var request = new Request(call.url);
 
-                request.request(call.url, call.options).then(() => {
+                request.request(call.options).then(() => {
                     this.log('OK!');
                 })
                 .catch((error) => {

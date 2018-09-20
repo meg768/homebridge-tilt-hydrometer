@@ -27,6 +27,6 @@
   "homepage": "https://github.com/meg768/homebridge-tilt-hydrometer#readme",
   "dependencies": {
     "bleacon": "^0.5.1",
-    "yow": "^1.0.91"
+    "yow": "^1.0.92"
   }
 }
