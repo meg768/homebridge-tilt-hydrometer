@@ -14,21 +14,27 @@
             "state": {
                 "off": [{
                     "method": "PUT",
-                    "path": "http://pi-tellstick:3000/turnoff",
+                    "hostname": "pi-tellstick",
+                    "port": 3000,
+                    "path": "/turnoff",
                     "query": {
                         "id": 11
                     }
                 }],
                 "heat": [{
                     "method": "PUT",
-                    "path": "http://pi-tellstick:3000/turnoff",
+                    "hostname": "pi-tellstick",
+                    "port": 3000,
+                    "path": "/turnoff",
                     "query": {
                         "id": 11
                     }
                 }],
                 "cool": [{
                     "method": "PUT",
-                    "path": "http://pi-tellstick:3000/turnon",
+                    "hostname": "pi-tellstick",
+                    "port": 3000,
+                    "path": "/turnon",
                     "query": {
                         "id": 11
                     }
