@@ -7,42 +7,7 @@ var Request = require('yow/request');
 
 var Service = null;
 var Characteristic = null;
-/*
-function buildPayload(bleacon){
 
-    var deviceLabel = tilt[bleacon.uuid] + '-' + bleacon.uuid; // Assigns the device label based on the TILT identified
-    bleacon.timeStamp = Date.now(); // Set the actual timestamp
-
-    // Build the payload by default
-    var payload = {
-        "uuid": deviceLabel,
-        "temperature":{ "value": bleacon.major, "timestamp": bleacon.timeStamp },
-        "gravity": { "value": bleacon.minor/1000, "timestamp": bleacon.timeStamp },
-        "rssi": { "value": bleacon.rssi, "timestamp": bleacon.timeStamp }
-    };
-    return payload;
-}
-
-Bleacon.on('discover', function (bleacon) {
-
-    // Identifies the TILT Hydrometer available
-    var tilt = {
-        "a495bb10c5b14b44b5121370f02d74de": "Red",
-        "a495bb20c5b14b44b5121370f02d74de": "Green",
-        "a495bb30c5b14b44b5121370f02d74de": "Black",
-        "a495bb40c5b14b44b5121370f02d74de": "Purple",
-        "a495bb50c5b14b44b5121370f02d74de": "Orange",
-        "a495bb60c5b14b44b5121370f02d74de": "Blue",
-        "a495bb70c5b14b44b5121370f02d74de": "Pink"
-    };
-
-    if (tilt[bleacon.uuid] != null) {
-        console.log(buildPayload(bleacon));
-    }
-});
-
-Bleacon.startScanning();
-*/
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
@@ -57,9 +22,9 @@ class TiltHydrometer {
         this.log = log;
         this.config = config;
         this.name = config.name;
+        this.timer = null;
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
-
 
         this.currentTemperature = 21;
         this.targetTemperature = 21;
@@ -83,8 +48,59 @@ class TiltHydrometer {
         //Characteristic.TargetHeatingCoolingState.COOL = 2;
         //Characteristic.TargetHeatingCoolingState.AUTO = 3;
         this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;
-        this.timer = null;
+
         this.service = new Service.Thermostat(this.name);
+
+        this.service.getCharacteristic(Characteristic.Name).on('get', callback => {
+            callback(null, this.name);
+        });
+
+        this.enableCurrentHeatingCoolingState();
+        this.enableTargetHeatingCoolingState();
+        this.enableCurrentTemperature();
+        this.enableTargetTemperature();
+        this.enableDisplayUnits();
+        this.enableCoolingThresholdTemperature();
+        this.enableHeatingThresholdTemperature();
+
+        this.enableTimer();
+
+
+        Bleacon.on('discover', function (bleacon) {
+
+            // Identifies the TILT Hydrometer available
+            var tilt = {
+                "a495bb10c5b14b44b5121370f02d74de": "Red",
+                "a495bb20c5b14b44b5121370f02d74de": "Green",
+                "a495bb30c5b14b44b5121370f02d74de": "Black",
+                "a495bb40c5b14b44b5121370f02d74de": "Purple",
+                "a495bb50c5b14b44b5121370f02d74de": "Orange",
+                "a495bb60c5b14b44b5121370f02d74de": "Blue",
+                "a495bb70c5b14b44b5121370f02d74de": "Pink"
+            };
+
+            function buildPayload(bleacon){
+
+                var deviceLabel = tilt[bleacon.uuid] + '-' + bleacon.uuid; // Assigns the device label based on the TILT identified
+                bleacon.timeStamp = Date.now(); // Set the actual timestamp
+
+                // Build the payload by default
+                var payload = {
+                    "uuid": deviceLabel,
+                    "temperature":{ "value": bleacon.major, "timestamp": bleacon.timeStamp },
+                    "gravity": { "value": bleacon.minor/1000, "timestamp": bleacon.timeStamp },
+                    "rssi": { "value": bleacon.rssi, "timestamp": bleacon.timeStamp }
+                };
+                return payload;
+            }
+
+            if (tilt[bleacon.uuid] != null) {
+                this.log(buildPayload(bleacon));
+            }
+        });
+
+        Bleacon.startScanning();
+
 
     }
 
@@ -215,13 +231,6 @@ class TiltHydrometer {
 
 
     getAccessoryInformation() {
-        const service = new Service.AccessoryInformation();
-
-        service.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
-        service.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
-        service.setCharacteristic(Characteristic.SerialNumber, '1.0');
-
-        return service;
     }
 
     enableCurrentHeatingCoolingState() {
@@ -339,23 +348,14 @@ class TiltHydrometer {
 
     getServices() {
 
+        const service = new Service.AccessoryInformation();
 
-        this.service.getCharacteristic(Characteristic.Name).on('get', callback => {
-            callback(null, this.name);
-        });
-
-        this.enableCurrentHeatingCoolingState();
-        this.enableTargetHeatingCoolingState();
-        this.enableCurrentTemperature();
-        this.enableTargetTemperature();
-        this.enableDisplayUnits();
-        this.enableCoolingThresholdTemperature();
-        this.enableHeatingThresholdTemperature();
-
-        this.enableTimer();
+        service.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
+        service.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
+        service.setCharacteristic(Characteristic.SerialNumber, '1.0');
 
 
-        return [this.getAccessoryInformation(), this.service];
+        return [service, this.service];
     }
 
 }
