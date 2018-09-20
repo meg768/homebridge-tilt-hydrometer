@@ -25,6 +25,7 @@ class TiltHydrometer {
         this.timer = null;
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
+        this.payload = {};
 
         this.currentTemperature = 20;
         this.targetTemperature = 20;
@@ -95,13 +96,16 @@ class TiltHydrometer {
                 payload.temperature = bleacon.major;
                 payload.gravity = bleacon.minor / 1000;
                 payload.rssi = bleacon.rssi;
-                this.log(payload);
+                this.payload = payload;
             }
         });
 
         Bleacon.startScanning();
     }
 
+    toCelsius(f) {
+        return (5/9) * (f-32);
+    }
 
     disableTimer() {
         if (this.timer != null)
@@ -118,8 +122,17 @@ class TiltHydrometer {
         this.disableTimer();
 
         this.timer = setTimeout(() => {
-            var temperature = random([15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25]);
-            this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
+            if (this.payload.temperature) {
+                var temperature = this.payload.temperature;
+
+                if (this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS)
+                    temperature = this.toCelsius(temperature);
+
+                this.log('Tilt status', this.payload);
+                this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
+
+            }
+
             this.enableTimer();
         }, 5000);
     }
