@@ -1,0 +1,43 @@
+{
+    "bridge": {
+        "name": "Homebridge",
+        "username": "CC:22:3D:E3:CE:30",
+        "port": 51826,
+        "pin": "031-45-154"
+    },
+
+    "description": "Sample",
+
+    "accessories": [{
+            "accessory": "Tilt Hydrometer",
+            "name": "Green Tilt",
+            "state": {
+                "off": [{
+                    "method": "PUT",
+                    "path": "http://pi-tellstick:3000/turnoff",
+                    "query": {
+                        "id": 11
+                    }
+                }],
+                "heat": [{
+                    "method": "PUT",
+                    "path": "http://pi-tellstick:3000/turnoff",
+                    "query": {
+                        "id": 11
+                    }
+                }],
+                "cool": [{
+                    "method": "PUT",
+                    "path": "http://pi-tellstick:3000/turnon",
+                    "query": {
+                        "id": 11
+                    }
+                }]
+
+            }
+        }
+
+    ],
+
+    "platforms": []
+}
