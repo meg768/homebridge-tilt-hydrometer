@@ -166,12 +166,12 @@ class TiltHydrometer {
         if (isArray(calls)) {
 
             calls.forEach((call, index) => {
-                call = Object.assign({debug:true}, call);
+                call.options = Object.assign({debug:true}, call.options);
                 this.log(call);
 
-                var request = new Request(call);
+                var request = new Request();
 
-                request.request(call).then(() => {
+                request.request(call.url, call.options).then(() => {
                     this.log('OK!');
                 })
                 .catch((error) => {
