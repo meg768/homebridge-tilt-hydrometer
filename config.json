@@ -11,6 +11,7 @@
     "accessories": [{
             "accessory": "Tilt Hydrometer",
             "name": "Green Tilt",
+            "color": "green",
             "state": {
                 "off": [{
                     "url": "http://pi-tellstick:3000/turnoff",
