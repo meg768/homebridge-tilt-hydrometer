@@ -26,11 +26,11 @@ class TiltHydrometer {
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
 
-        this.currentTemperature = 21;
-        this.targetTemperature = 21;
+        this.currentTemperature = 20;
+        this.targetTemperature = 20;
 
         this.heatingThresholdTemperature = 18;
-        this.coolingThresholdTemperature = 24;
+        this.coolingThresholdTemperature = 21;
 
         //Characteristic.TemperatureDisplayUnits.CELSIUS = 0;
         //Characteristic.TemperatureDisplayUnits.FAHRENHEIT = 1;
