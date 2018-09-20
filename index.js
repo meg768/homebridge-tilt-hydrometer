@@ -128,7 +128,7 @@ class TiltHydrometer {
                 if (this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS)
                     temperature = this.toCelsius(temperature);
 
-                this.log('Tilt status', this.payload);
+                this.log('Tilt status', this.payload, temperature);
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
 
             }
