@@ -128,7 +128,6 @@ class TiltHydrometer {
                 if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
                     temperature = this.toCelsius(temperature);
 
-                this.log('Tilt status', this.payload, temperature);
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
 
             }
@@ -280,7 +279,7 @@ class TiltHydrometer {
         currentTemperature.setProps({
             minValue: this.minTemperature,
             maxValue: this.maxTemperature,
-            minStep: 0.5
+            minStep: 0.1
         });
         currentTemperature.on('get', callback => {
             callback(null, this.currentTemperature);
@@ -298,7 +297,7 @@ class TiltHydrometer {
         targetTemperature.setProps({
             minValue: this.minTemperature,
             maxValue: this.maxTemperature,
-            minStep: 0.5
+            minStep: 0.1
         });
 
         targetTemperature.on('get', callback => {
