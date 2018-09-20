@@ -13,34 +13,34 @@
             "name": "Green Tilt",
             "state": {
                 "off": [{
-                    "method": "PUT",
-                    "hostname": "pi-tellstick",
-                    "port": 3000,
-                    "path": "/turnoff",
-                    "query": {
-                        "id": 11
+                    "url": "http://pi-tellstick:3000/turnoff",
+                    "options": {
+                        "method": "PUT",
+                        "query": {
+                            "id": 11
+                        }
                     }
                 }],
                 "heat": [{
-                    "method": "PUT",
-                    "hostname": "pi-tellstick",
-                    "port": 3000,
-                    "path": "/turnoff",
-                    "query": {
-                        "id": 11
+                    "url": "http://pi-tellstick:3000/turnoff",
+                    "options": {
+                        "method": "PUT",
+                        "query": {
+                            "id": 11
+                        }
                     }
                 }],
                 "cool": [{
-                    "method": "PUT",
-                    "hostname": "pi-tellstick",
-                    "port": 3000,
-                    "path": "/turnon",
-                    "query": {
-                        "id": 11
+                    "url": "http://pi-tellstick:3000/turnon",
+                    "options": {
+                        "method": "PUT",
+                        "query": {
+                            "id": 11
+                        }
                     }
                 }]
-
             }
+
         }
 
     ],
