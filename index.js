@@ -66,7 +66,7 @@ class TiltHydrometer {
         this.enableTimer();
 
 
-        Bleacon.on('discover', function (bleacon) {
+        Bleacon.on('discover', (bleacon) => {
 
             // Identifies the TILT Hydrometer available
             var tilt = {
