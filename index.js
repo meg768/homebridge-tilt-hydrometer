@@ -171,6 +171,10 @@ class TiltHydrometer {
 
         var calls = undefined;
 
+        // Be silent if turned off
+        if (this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF)
+            return;
+
         switch (this.currentHeatingCoolingState) {
             case Characteristic.CurrentHeatingCoolingState.OFF:
                 {
