@@ -282,19 +282,19 @@ class TiltHydrometer {
 
 
     enableCurrentTemperature() {
-        var currentTemperature = this.service.getCharacteristic(Characteristic.CurrentTemperature);
+        var characteristic = this.service.getCharacteristic(Characteristic.CurrentTemperature);
 
-        currentTemperature.setProps({
+        characteristic.setProps({
             minValue: this.minTemperature,
             maxValue: this.maxTemperature,
             minStep: 0.1
         });
 
-        currentTemperature.on('get', callback => {
+        characteristic.on('get', callback => {
             callback(null, this.currentTemperature);
         });
 
-        currentTemperature.on('set', (value, callback) => {
+        characteristic.on('set', (value, callback) => {
             this.currentTemperature = value;
             this.updateCurrentHeatingCoolingState();
             this.fireRequests();
@@ -304,19 +304,19 @@ class TiltHydrometer {
     }
 
     enableTargetTemperature() {
-        var targetTemperature = this.service.getCharacteristic(Characteristic.TargetTemperature);
+        var characteristic = this.service.getCharacteristic(Characteristic.TargetTemperature);
 
-        targetTemperature.setProps({
+        characteristic.setProps({
             minValue: this.minTemperature,
             maxValue: this.maxTemperature,
             minStep: 0.1
         });
 
-        targetTemperature.on('get', callback => {
+        characteristic.on('get', callback => {
             callback(null, this.targetTemperature);
         });
 
-        targetTemperature.on('set', (value, callback) => {
+        characteristic.on('set', (value, callback) => {
 
             this.targetTemperature = value;
 
@@ -330,25 +330,26 @@ class TiltHydrometer {
 
     enableDisplayUnits() {
         // °C or °F for units
-        var displayUnits = this.service.getCharacteristic(Characteristic.TemperatureDisplayUnits);
+        var characteristic = this.service.getCharacteristic(Characteristic.TemperatureDisplayUnits);
 
-        displayUnits.on('get', callback => {
+        characteristic.on('get', callback => {
             callback(null, this.temperatureDisplayUnits);
         });
-        displayUnits.on('set', (value, callback) => {
+        characteristic.on('set', (value, callback) => {
             this.temperatureDisplayUnits = value;
+            this.restartTiltTimer();
+
             callback(null);
         });
     }
 
     enableCoolingThresholdTemperature() {
+        var characteristic = this.service.getCharacteristic(Characteristic.CoolingThresholdTemperature);
 
-        var thresholdTemperature = this.service.getCharacteristic(Characteristic.CoolingThresholdTemperature);
-
-        thresholdTemperature.on('get', callback => {
+        characteristic.on('get', callback => {
             callback(null, this.coolingThresholdTemperature);
         });
-        thresholdTemperature.on('set', (value, callback) => {
+        characteristic.on('set', (value, callback) => {
             this.coolingThresholdTemperature = value;
             this.updateCurrentHeatingCoolingState();
             callback(null);
@@ -357,15 +358,13 @@ class TiltHydrometer {
     }
 
     enableHeatingThresholdTemperature() {
-        // Auto min temperature
-        var thresholdTemperature = this.service.getCharacteristic(Characteristic.HeatingThresholdTemperature);
+        var characteristic = this.service.getCharacteristic(Characteristic.HeatingThresholdTemperature);
 
-        thresholdTemperature.on('get', callback => {
+        characteristic.on('get', callback => {
             callback(null, this.heatingThresholdTemperature);
         });
-        thresholdTemperature.on('set', (value, callback) => {
+        characteristic.on('set', (value, callback) => {
             this.heatingThresholdTemperature = value;
-
             this.updateCurrentHeatingCoolingState();
             callback(null);
         });
