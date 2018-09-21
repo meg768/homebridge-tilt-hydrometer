@@ -208,7 +208,9 @@ class TiltHydrometer {
     }
 
     fireRequestsWithDelay() {
-        this.requestTimer.setTimer(2000, this.fireRequests);
+        this.requestTimer.setTimer(2000, () => {
+            this.fireRequests();
+        });
     }
 
     updateCurrentHeatingCoolingState() {
