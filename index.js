@@ -262,10 +262,12 @@ class TiltHydrometer {
         var characteristic = this.service.getCharacteristic(Characteristic.SerialNumber);
 
         characteristic.on('get', callback => {
+            this.log('GETTING serial NUMBER');
             callback(null, 'KALLE');
         });
 
         characteristic.on('set', (value, callback) => {
+            this.log('SETTING serial NUMBER', value);
             callback(null);
         });
     }
