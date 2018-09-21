@@ -161,57 +161,56 @@ class TiltHydrometer {
 
     fireRequests() {
 
-        var calls = undefined;
-
-        // Be silent if turned off
-        if (this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF)
-            return;
-
-        switch (this.currentHeatingCoolingState) {
-            case Characteristic.CurrentHeatingCoolingState.OFF:
-                {
-                    calls = this.config.state.off;
-                    break;
-                };
-            case Characteristic.CurrentHeatingCoolingState.HEAT:
-                {
-                    calls = this.config.state.heat;
-                    break;
-                };
-            case Characteristic.CurrentHeatingCoolingState.COOL:
-                {
-                    calls = this.config.state.cool;
-                    break;
-                };
-        }
-
-        if (calls != undefined && !isArray(calls))
-            calls = [calls];
-
-        if (isArray(calls)) {
-
-            calls.forEach((call, index) => {
-                this.log('Making request:', call.url, JSON.stringify(call.options));
-
-                var request = new Request(call.url);
-
-                request.request(call.options).then(() => {
-
-                })
-                .catch((error) => {
-                    this.log(error);
-                })
-            });
-        }
-
-
-    }
-
-    fireRequestsWithDelay() {
+        // Send the requests with a delay so it doesn't get called so often
         this.requestTimer.setTimer(2000, () => {
-            this.fireRequests();
+            var calls = undefined;
+
+            // Be silent if turned off
+            if (this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF)
+                return;
+
+            switch (this.currentHeatingCoolingState) {
+                case Characteristic.CurrentHeatingCoolingState.OFF:
+                    {
+                        calls = this.config.state.off;
+                        break;
+                    };
+                case Characteristic.CurrentHeatingCoolingState.HEAT:
+                    {
+                        calls = this.config.state.heat;
+                        break;
+                    };
+                case Characteristic.CurrentHeatingCoolingState.COOL:
+                    {
+                        calls = this.config.state.cool;
+                        break;
+                    };
+            }
+
+            if (calls != undefined && !isArray(calls))
+                calls = [calls];
+
+            if (isArray(calls)) {
+
+                calls.forEach((call, index) => {
+                    this.log('Making request:', call.url, JSON.stringify(call.options));
+
+                    var request = new Request(call.url);
+
+                    request.request(call.options).then(() => {
+
+                    })
+                    .catch((error) => {
+                        this.log(error);
+                    })
+                });
+            }
+
         });
+
+
     }
+
 
     updateCurrentHeatingCoolingState() {
 
@@ -254,7 +253,8 @@ class TiltHydrometer {
         characteristic.on('set', (value, callback) => {
             this.currentHeatingCoolingState = value;
             this.updateCurrentHeatingCoolingState();
-            this.fireRequestsWithDelay();
+            this.fireRequests();
+
             callback(null);
         });
     }
@@ -289,13 +289,16 @@ class TiltHydrometer {
             maxValue: this.maxTemperature,
             minStep: 0.1
         });
+
         currentTemperature.on('get', callback => {
             callback(null, this.currentTemperature);
         });
+
         currentTemperature.on('set', (value, callback) => {
             this.currentTemperature = value;
             this.updateCurrentHeatingCoolingState();
-            this.fireRequestsWithDelay();
+            this.fireRequests();
+
             callback(null);
         });
     }
