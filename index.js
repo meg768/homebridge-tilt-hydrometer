@@ -113,7 +113,7 @@ class TiltHydrometer {
 
 
         if (this.payload) {
-            this.log(this.payload);
+            this.log('Tilt:', JSON.stringify(this.payload));
 
             if (this.payload.temperature) {
                 var temperature = this.payload.temperature;
