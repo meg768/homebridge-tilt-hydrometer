@@ -5,6 +5,7 @@ var Bleacon = require('bleacon');
 var isArray = require('yow/is').isArray;
 var Request = require('yow/request');
 var Timer   = require('yow/timer');
+var sprintf = require('yow/sprintf');
 
 var Service = null;
 var Characteristic = null;
@@ -129,7 +130,7 @@ class TiltHydrometer {
             }
 
             if (this.tilt.gravity) {
-                this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, sprintf('SG %s', this.tilt.gravity));                
+                this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, sprintf('SG %s', this.tilt.gravity));
             }
 
 
