@@ -127,9 +127,11 @@ class TiltHydrometer {
             if (this.tilt.temperature) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
+            /*
             if (this.tilt.gravity) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
+            */
 
             /*
             if (this.tilt.gravity) {
