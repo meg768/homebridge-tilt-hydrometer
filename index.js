@@ -73,7 +73,7 @@ class TiltHydrometer {
         this.enableCoolingThresholdTemperature();
         this.enableHeatingThresholdTemperature();
 
-        this.enableSerialNumber();
+        //this.enableSerialNumber();
 
         this.enableTilt();
         this.restartTiltTimer();
