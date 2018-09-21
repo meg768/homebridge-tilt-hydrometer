@@ -24,7 +24,7 @@ class TiltHydrometer {
         this.config = config;
         this.name = config.name;
         this.tiltTimer = new Timer();
-        this.timeoutTimer = new Timer();
+        this.requestTimer = new Timer();
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
         this.tilt = null;
@@ -157,6 +157,8 @@ class TiltHydrometer {
         return false;
     }
 
+
+
     fireRequests() {
 
         var calls = undefined;
@@ -205,6 +207,9 @@ class TiltHydrometer {
 
     }
 
+    fireRequestsWithDelay() {
+        this.requestTimer.setTimer(2000, this.fireRequests);
+    }
 
     updateCurrentHeatingCoolingState() {
 
@@ -247,7 +252,7 @@ class TiltHydrometer {
         characteristic.on('set', (value, callback) => {
             this.currentHeatingCoolingState = value;
             this.updateCurrentHeatingCoolingState();
-            this.fireRequests();
+            this.fireRequestsWithDelay();
             callback(null);
         });
     }
@@ -265,11 +270,8 @@ class TiltHydrometer {
 
             this.targetHeatingCoolingState = value;
 
-            // Do this first after a while to prevent multiple updates
-            this.timeoutTimer.setTimer(1000, () => {
-                this.updateCurrentHeatingCoolingState();
-                this.restartTiltTimer();
-            });
+            this.updateCurrentHeatingCoolingState();
+            this.restartTiltTimer();
 
             callback(null);
         });
@@ -291,7 +293,7 @@ class TiltHydrometer {
         currentTemperature.on('set', (value, callback) => {
             this.currentTemperature = value;
             this.updateCurrentHeatingCoolingState();
-            this.fireRequests();
+            this.fireRequestsWithDelay();
             callback(null);
         });
     }
@@ -313,12 +315,8 @@ class TiltHydrometer {
 
             this.targetTemperature = value;
 
-            // Do this first after a while to prevent multiple updates
-            this.timeoutTimer.setTimer(1000, () => {
-                this.updateCurrentHeatingCoolingState();
-                this.restartTiltTimer();
-
-            });
+            this.updateCurrentHeatingCoolingState();
+            this.restartTiltTimer();
 
             callback(null);
         });
