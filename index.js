@@ -251,6 +251,7 @@ class TiltHydrometer {
         characteristic.on('set', (value, callback) => {
             this.currentHeatingCoolingState = value;
             this.updateSystem();
+            this.fireRequests();
             callback(null);
         });
     }
@@ -311,7 +312,7 @@ class TiltHydrometer {
 
         targetTemperature.on('set', (value, callback) => {
             this.targetTemperature = value;
-            this.updateSystem(true);
+            this.updateSystem();
             callback(null);
         });
 
