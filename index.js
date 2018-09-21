@@ -28,7 +28,6 @@ class TiltHydrometer {
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
         this.tilt = null;
-        this.
 
         this.currentTemperature = 20;
         this.targetTemperature = 20;
