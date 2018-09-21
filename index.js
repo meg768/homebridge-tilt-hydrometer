@@ -65,7 +65,7 @@ class TiltHydrometer {
         this.enableHeatingThresholdTemperature();
 
         this.enableTilt();
-        this.enableTimer();
+        this.restartTiltTimer();
     }
 
 
@@ -103,7 +103,7 @@ class TiltHydrometer {
 
 
 
-    enableTimer() {
+    restartTiltTimer() {
         function toCelsius(f) {
             return (5/9) * (f-32);
         }
@@ -123,12 +123,13 @@ class TiltHydrometer {
 
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
             }
-            this.timer = setTimeout(this.enableTimer.bind(this), 30000);
+
+            this.timer = setTimeout(this.restartTiltTimer.bind(this), 30000);
 
         }
         else {
             // Poll a little bit faster until connection to Tilt is completed
-            this.timer = setTimeout(this.enableTimer.bind(this), 1000);
+            this.timer = setTimeout(this.restartTiltTimer.bind(this), 1000);
         }
     }
 
@@ -194,15 +195,16 @@ class TiltHydrometer {
         if (isArray(calls)) {
 
             calls.forEach((call, index) => {
-                call.options = Object.assign({debug:true}, call.options);
+                this.log('Making request:', call.url, JSON.stringify(call.options));
 
-                this.log('Making request:', call.url);
                 var request = new Request(call.url);
 
-                request.request(call.options).then(() => {})
-                    .catch((error) => {
-                        this.log(error);
-                    })
+                request.request(call.options).then(() => {
+
+                })
+                .catch((error) => {
+                    this.log(error);
+                })
             });
         }
 
@@ -210,7 +212,7 @@ class TiltHydrometer {
     }
 
 
-    updateSystem() {
+    updateCurrentHeatingCoolingState() {
 
         var state = this.currentHeatingCoolingState;
 
@@ -250,7 +252,7 @@ class TiltHydrometer {
 
         characteristic.on('set', (value, callback) => {
             this.currentHeatingCoolingState = value;
-            this.updateSystem();
+            this.updateCurrentHeatingCoolingState();
             this.fireRequests();
             callback(null);
         });
@@ -267,11 +269,11 @@ class TiltHydrometer {
 
         characteristic.on('set', (value, callback) => {
             this.targetHeatingCoolingState = value;
-            this.updateSystem();
+            this.updateCurrentHeatingCoolingState();
 
             // If changed from OFF to HEAT/COOL/AUTO, restart the timer
             if (this.targetHeatingCoolingState != Characteristic.TargetHeatingCoolingState.OFF) {
-                this.enableTimer();
+                this.restartTiltTimer();
             }
             callback(null);
         });
@@ -291,7 +293,7 @@ class TiltHydrometer {
         });
         currentTemperature.on('set', (value, callback) => {
             this.currentTemperature = value;
-            this.updateSystem();
+            this.updateCurrentHeatingCoolingState();
             this.fireRequests();
             callback(null);
         });
@@ -312,7 +314,9 @@ class TiltHydrometer {
 
         targetTemperature.on('set', (value, callback) => {
             this.targetTemperature = value;
-            this.updateSystem();
+            this.updateCurrentHeatingCoolingState();
+            this.restartTiltTimer();
+
             callback(null);
         });
 
@@ -340,7 +344,7 @@ class TiltHydrometer {
         });
         thresholdTemperature.on('set', (value, callback) => {
             this.coolingThresholdTemperature = value;
-            this.updateSystem();
+            this.updateCurrentHeatingCoolingState();
             callback(null);
         });
 
@@ -355,7 +359,7 @@ class TiltHydrometer {
         });
         thresholdTemperature.on('set', (value, callback) => {
             this.heatingThresholdTemperature = value;
-            this.updateSystem();
+            this.updateCurrentHeatingCoolingState();
             callback(null);
         });
 
