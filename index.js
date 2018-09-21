@@ -25,7 +25,7 @@ class TiltHydrometer {
         this.timer = null;
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
-        this.payload = {};
+        this.payload = null;
 
         this.currentTemperature = 20;
         this.targetTemperature = 20;
@@ -64,12 +64,8 @@ class TiltHydrometer {
         this.enableCoolingThresholdTemperature();
         this.enableHeatingThresholdTemperature();
 
-        this.enableTimer();
-
         this.enableTilt();
-
-
-
+        this.enableTimer();
     }
 
 
@@ -91,11 +87,13 @@ class TiltHydrometer {
 
             if (tilt[bleacon.uuid] == this.config.color) {
                 var payload = {};
+
                 payload.timestamp = new Date();
                 payload.color = this.config.color;
                 payload.temperature = bleacon.major;
                 payload.gravity = bleacon.minor / 1000;
                 payload.rssi = bleacon.rssi;
+
                 this.payload = payload;
             }
         });
@@ -103,32 +101,35 @@ class TiltHydrometer {
         Bleacon.startScanning();
     }
 
-    toCelsius(f) {
-        return (5/9) * (f-32);
-    }
 
-    readCurrentTemperature() {
-        if (this.payload.temperature) {
-            this.log(this.payload);
-            var temperature = this.payload.temperature;
-
-            if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
-                temperature = this.toCelsius(temperature);
-
-            this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
-
-        }
-    }
 
     enableTimer() {
+        function toCelsius(f) {
+            return (5/9) * (f-32);
+        }
 
         if (this.timer != null)
             clearTimeout(this.timer);
 
-        this.timer = setTimeout(() => {
-            this.readCurrentTemperature();
-            this.enableTimer();
-        }, 20000);
+
+        if (this.payload) {
+            this.log(this.payload);
+
+            if (this.payload.temperature) {
+                var temperature = this.payload.temperature;
+
+                if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
+                    temperature = toCelsius(temperature);
+
+                this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
+            }
+            this.timer = setTimeout(this.enableTimer.bind(this), 30000);
+
+        }
+        else {
+            // Poll a little bit faster until connection to Tilt is completed
+            this.timer = setTimeout(this.enableTimer.bind(this), 1000);
+        }
     }
 
 
@@ -267,9 +268,9 @@ class TiltHydrometer {
             this.targetHeatingCoolingState = value;
             this.updateSystem();
 
-            // If changed from OFF to HEAT/COOL/AUTO, read temperature now
+            // If changed from OFF to HEAT/COOL/AUTO, restart the timer
             if (this.targetHeatingCoolingState != Characteristic.TargetHeatingCoolingState.OFF) {
-                this.readCurrentTemperature();
+                this.enableTimer();
             }
             callback(null);
         });
