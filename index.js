@@ -58,15 +58,6 @@ class TiltHydrometer {
             callback(null, this.name);
         });
 
-        this.accessoryInformation = new Service.AccessoryInformation();
-
-        this.accessoryInformation.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
-        this.accessoryInformation.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
-        this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, '1.0');
-
-
-
-
         this.enableCurrentHeatingCoolingState();
         this.enableTargetHeatingCoolingState();
         this.enableCurrentTemperature();
@@ -125,9 +116,6 @@ class TiltHydrometer {
             this.log('Tilt:', JSON.stringify(this.tilt));
 
             if (this.tilt.temperature) {
-                this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
-            }
-            if (this.tilt.gravity) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
 
