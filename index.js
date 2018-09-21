@@ -129,10 +129,8 @@ class TiltHydrometer {
                 if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
                     temperature = this.toCelsius(temperature);
 
-                this.currentTemperature = temperature;
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
 
-                this.updateSystem(true);
             }
 
             this.enableTimer();
@@ -215,6 +213,8 @@ class TiltHydrometer {
 
     updateSystem(alwaysFireRequests) {
 
+        console.log('Updating system...');
+
         var state = this.currentHeatingCoolingState;
 
         if (this.shouldTurnOnHeating()) {
@@ -238,9 +238,6 @@ class TiltHydrometer {
 
             this.currentHeatingCoolingState = state;
             this.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, state);
-
-            this.fireRequests();
-
         }
 
     }
@@ -256,6 +253,7 @@ class TiltHydrometer {
         });
 
         characteristic.on('set', (value, callback) => {
+            this.log('Current heating/cooling state set to', value);
             this.currentHeatingCoolingState = value;
             this.updateSystem();
             callback(null);
@@ -293,7 +291,7 @@ class TiltHydrometer {
         currentTemperature.on('set', (value, callback) => {
             this.log('Temperature set to', value);
             this.currentTemperature = value;
-            this.updateSystem();
+            this.updateSystem(true);
             callback(null);
         });
     }
@@ -310,9 +308,10 @@ class TiltHydrometer {
         targetTemperature.on('get', callback => {
             callback(null, this.targetTemperature);
         });
+
         targetTemperature.on('set', (value, callback) => {
             this.targetTemperature = value;
-            this.updateSystem();
+            this.updateSystem(true);
             callback(null);
         });
 
