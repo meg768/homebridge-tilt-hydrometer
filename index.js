@@ -73,6 +73,8 @@ class TiltHydrometer {
         this.enableCoolingThresholdTemperature();
         this.enableHeatingThresholdTemperature();
 
+        this.enableSerialNumber();
+
         this.enableTilt();
         this.restartTiltTimer();
     }
@@ -130,6 +132,7 @@ class TiltHydrometer {
             }
 
             if (this.tilt.gravity) {
+                this.log('Setting ACI...');
                 this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, sprintf('SG %s', this.tilt.gravity));
             }
 
@@ -254,6 +257,18 @@ class TiltHydrometer {
 
     }
 
+    enableSerialNumber() {
+
+        var characteristic = this.service.getCharacteristic(Characteristic.SerialNumber);
+
+        characteristic.on('get', callback => {
+            callback(null, 'KALLE');
+        });
+
+        characteristic.on('set', (value, callback) => {
+            callback(null);
+        });
+    }
 
 
     enableCurrentHeatingCoolingState() {
