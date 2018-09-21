@@ -131,10 +131,12 @@ class TiltHydrometer {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
 
+            /*
             if (this.tilt.gravity) {
                 this.log('Setting ACI...');
                 this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, sprintf('SG %s', this.tilt.gravity));
             }
+            */
 
 
         }
