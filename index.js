@@ -25,7 +25,7 @@ class TiltHydrometer {
         this.timer = null;
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
-        this.payload = null;
+        this.tilt = null;
 
         this.currentTemperature = 20;
         this.targetTemperature = 20;
@@ -86,15 +86,17 @@ class TiltHydrometer {
 
 
             if (tilt[bleacon.uuid] == this.config.color) {
-                var payload = {};
+                var tilt = {};
 
-                payload.timestamp = new Date();
-                payload.color = this.config.color;
-                payload.temperature = bleacon.major;
-                payload.gravity = bleacon.minor / 1000;
-                payload.rssi = bleacon.rssi;
+                tilt.timestamp   = new Date();
+                tilt.gravity     = bleacon.minor / 1000;
+                tilt.rssi        = bleacon.rssi;
+                tilt.temperature = {
+                    F: bleacon.major,
+                    C: return (5/9) * (bleacon.major-32);
+                };
 
-                this.payload = payload;
+                this.tilt = tilt;
             }
         });
 
@@ -104,24 +106,15 @@ class TiltHydrometer {
 
 
     restartTiltTimer() {
-        function toCelsius(f) {
-            return (5/9) * (f-32);
-        }
 
         if (this.timer != null)
             clearTimeout(this.timer);
 
+        if (this.tilt) {
+            this.log('Tilt:', JSON.stringify(this.tilt));
 
-        if (this.payload) {
-            this.log('Tilt:', JSON.stringify(this.payload));
-
-            if (this.payload.temperature) {
-                var temperature = this.payload.temperature;
-
-                if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
-                    temperature = toCelsius(temperature);
-
-                this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
+            if (this.tilt.temperature) {
+                this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
 
             // Return in 15 minutes
