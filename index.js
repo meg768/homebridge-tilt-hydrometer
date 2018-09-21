@@ -129,7 +129,6 @@ class TiltHydrometer {
 
         }
         else {
-            this.log('Waiting for Tilt readings...');
             // Poll a little bit faster until connection to Tilt is completed
             this.timer = setTimeout(this.restartTiltTimer.bind(this), 1000);
         }
@@ -272,11 +271,8 @@ class TiltHydrometer {
         characteristic.on('set', (value, callback) => {
             this.targetHeatingCoolingState = value;
             this.updateCurrentHeatingCoolingState();
+            this.restartTiltTimer();
 
-            // If changed from OFF to HEAT/COOL/AUTO, restart the timer
-            if (this.targetHeatingCoolingState != Characteristic.TargetHeatingCoolingState.OFF) {
-                this.restartTiltTimer();
-            }
             callback(null);
         });
 
