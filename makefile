@@ -5,6 +5,9 @@ all:
 pull:
 	git pull
 
+config:
+	node ./scripts/install-config.js
+
 install:
 	npm install -g
 

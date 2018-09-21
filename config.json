@@ -14,29 +14,29 @@
             "color": "green",
             "state": {
                 "off": [{
-                    "url": "http://pi-tellstick:3000/turnoff",
+                    "url": "http://pi-tellstick:3000/devices/BKB",
                     "options": {
                         "method": "PUT",
                         "query": {
-                            "id": 11
+                            "state": "OFF"
                         }
                     }
                 }],
                 "heat": [{
-                    "url": "http://pi-tellstick:3000/turnoff",
+                    "url": "http://pi-tellstick:3000/devices/BKB",
                     "options": {
                         "method": "PUT",
                         "query": {
-                            "id": 11
+                            "state": "OFF"
                         }
                     }
                 }],
                 "cool": [{
-                    "url": "http://pi-tellstick:3000/turnon",
+                    "url": "http://pi-tellstick:3000/devices/BKB",
                     "options": {
                         "method": "PUT",
                         "query": {
-                            "id": 11
+                            "state": "ON"
                         }
                     }
                 }]

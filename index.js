@@ -207,6 +207,8 @@ class TiltHydrometer {
 
 
     }
+
+
     updateSystem() {
 
         var state = this.currentHeatingCoolingState;
@@ -239,7 +241,6 @@ class TiltHydrometer {
     }
 
 
-    getAccessoryInformation() {}
 
     enableCurrentHeatingCoolingState() {
 
