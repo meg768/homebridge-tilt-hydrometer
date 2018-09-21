@@ -129,8 +129,10 @@ class TiltHydrometer {
                 if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
                     temperature = this.toCelsius(temperature);
 
+                this.currentTemperature = value;
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
 
+                this.updateSystem(true);
             }
 
             this.enableTimer();
@@ -167,11 +169,11 @@ class TiltHydrometer {
         return false;
     }
 
-    fireRequest(state) {
+    fireRequests() {
 
         var calls = undefined;
 
-        switch (state) {
+        switch (this.currentHeatingCoolingState) {
             case Characteristic.CurrentHeatingCoolingState.OFF:
                 {
                     calls = this.config.state.off;
@@ -211,7 +213,7 @@ class TiltHydrometer {
     }
 
 
-    updateSystem() {
+    updateSystem(alwaysFireRequests) {
 
         var state = this.currentHeatingCoolingState;
 
@@ -223,7 +225,7 @@ class TiltHydrometer {
             state = Characteristic.CurrentHeatingCoolingState.OFF;
         }
 
-        if (state != this.currentHeatingCoolingState) {
+        if (alwaysFireRequests || state != this.currentHeatingCoolingState) {
             if (state == Characteristic.CurrentHeatingCoolingState.OFF) {
                 this.log('Turning off since current temperature is', this.currentTemperature);
             };
@@ -234,9 +236,10 @@ class TiltHydrometer {
                 this.log('Turning on cool since current temperature is', this.currentTemperature);
             };
 
+            this.currentHeatingCoolingState = state;
             this.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, state);
 
-            this.fireRequest(state);
+            this.fireRequests();
 
         }
 
@@ -288,6 +291,7 @@ class TiltHydrometer {
             callback(null, this.currentTemperature);
         });
         currentTemperature.on('set', (value, callback) => {
+            this.log('Temperature set to', value);
             this.currentTemperature = value;
             this.updateSystem();
             callback(null);
