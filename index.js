@@ -4,6 +4,7 @@ const ON = false;
 var Bleacon = require('bleacon');
 var isArray = require('yow/is').isArray;
 var Request = require('yow/request');
+var Timer   = require('yow/timer');
 
 var Service = null;
 var Characteristic = null;
@@ -22,10 +23,12 @@ class TiltHydrometer {
         this.log = log;
         this.config = config;
         this.name = config.name;
-        this.timer = null;
+        this.tiltTimer = new Timer();
+        this.timeoutTimer = new Timer();
         this.maxTemperature = config.maxTemperature || 30;
         this.minTemperature = config.minTemperature || 0;
         this.tilt = null;
+        this.
 
         this.currentTemperature = 20;
         this.targetTemperature = 20;
@@ -107,23 +110,21 @@ class TiltHydrometer {
 
     restartTiltTimer() {
 
-        if (this.timer != null)
-            clearTimeout(this.timer);
-
         if (this.tilt) {
+            // Return in 15 minutes
+            this.tiltTimer.setTimer(15 * 60000, this.restartTiltTimer.bind(this));
+
             this.log('Tilt:', JSON.stringify(this.tilt));
 
             if (this.tilt.temperature) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
 
-            // Return in 15 minutes
-            this.timer = setTimeout(this.restartTiltTimer.bind(this), 15 * 60000);
 
         }
         else {
             // Poll a little bit faster until connection to Tilt is completed
-            this.timer = setTimeout(this.restartTiltTimer.bind(this), 1000);
+            this.tiltTimer.setTimer(1000, this.restartTiltTimer.bind(this));
         }
     }
 
@@ -262,14 +263,20 @@ class TiltHydrometer {
         });
 
         characteristic.on('set', (value, callback) => {
+
             this.targetHeatingCoolingState = value;
-            this.updateCurrentHeatingCoolingState();
-            this.restartTiltTimer();
+
+            // Do this first after a while to prevent multiple updates
+            this.timeoutTimer.setTimer(1000, () => {
+                this.updateCurrentHeatingCoolingState();
+                this.restartTiltTimer();
+            });
 
             callback(null);
         });
 
     }
+
 
     enableCurrentTemperature() {
         var currentTemperature = this.service.getCharacteristic(Characteristic.CurrentTemperature);
@@ -304,9 +311,15 @@ class TiltHydrometer {
         });
 
         targetTemperature.on('set', (value, callback) => {
+
             this.targetTemperature = value;
-            this.updateCurrentHeatingCoolingState();
-            this.restartTiltTimer();
+
+            // Do this first after a while to prevent multiple updates
+            this.timeoutTimer.setTimer(1000, () => {
+                this.updateCurrentHeatingCoolingState();
+                this.restartTiltTimer();
+
+            });
 
             callback(null);
         });
@@ -350,6 +363,7 @@ class TiltHydrometer {
         });
         thresholdTemperature.on('set', (value, callback) => {
             this.heatingThresholdTemperature = value;
+
             this.updateCurrentHeatingCoolingState();
             callback(null);
         });
