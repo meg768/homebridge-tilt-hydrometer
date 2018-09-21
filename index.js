@@ -93,7 +93,7 @@ class TiltHydrometer {
                 tilt.rssi        = bleacon.rssi;
                 tilt.temperature = {
                     F: bleacon.major,
-                    C: (5/9) * (bleacon.major - 32);
+                    C: (5/9) * (bleacon.major - 32)
                 };
 
                 this.tilt = tilt;
