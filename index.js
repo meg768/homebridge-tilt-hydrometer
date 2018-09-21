@@ -128,6 +128,7 @@ class TiltHydrometer {
 
         }
         else {
+            this.log('Waiting for Tilt readings...');
             // Poll a little bit faster until connection to Tilt is completed
             this.timer = setTimeout(this.restartTiltTimer.bind(this), 1000);
         }
