@@ -58,6 +58,12 @@ class TiltHydrometer {
             callback(null, this.name);
         });
 
+        this.accessoryInformation = new Service.AccessoryInformation();
+
+        this.accessoryInformation.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
+        this.accessoryInformation.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
+        this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, '1.0');
+
         this.enableCurrentHeatingCoolingState();
         this.enableTargetHeatingCoolingState();
         this.enableCurrentTemperature();
@@ -117,6 +123,13 @@ class TiltHydrometer {
 
             if (this.tilt.temperature) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
+            }
+            if (this.tilt.gravity) {
+                this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
+            }
+
+            if (this.tilt.gravity) {
+                this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, sprintf('SG %s', this.tilt.gravity));                
             }
 
 
@@ -373,14 +386,7 @@ class TiltHydrometer {
 
     getServices() {
 
-        const service = new Service.AccessoryInformation();
-
-        service.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
-        service.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
-        service.setCharacteristic(Characteristic.SerialNumber, '1.0');
-
-
-        return [service, this.service];
+        return [this.accessoryInformation, this.service];
     }
 
 }
