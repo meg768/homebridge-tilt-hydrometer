@@ -5,7 +5,6 @@ var Bleacon = require('bleacon');
 var isArray = require('yow/is').isArray;
 var Request = require('yow/request');
 var Timer   = require('yow/timer');
-var sprintf = require('yow/sprintf');
 
 var Service = null;
 var Characteristic = null;
@@ -65,6 +64,9 @@ class TiltHydrometer {
         this.accessoryInformation.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
         this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, '1.0');
 
+
+
+
         this.enableCurrentHeatingCoolingState();
         this.enableTargetHeatingCoolingState();
         this.enableCurrentTemperature();
@@ -72,8 +74,6 @@ class TiltHydrometer {
         this.enableDisplayUnits();
         this.enableCoolingThresholdTemperature();
         this.enableHeatingThresholdTemperature();
-
-        //this.enableSerialNumber();
 
         this.enableTilt();
         this.restartTiltTimer();
@@ -127,18 +127,9 @@ class TiltHydrometer {
             if (this.tilt.temperature) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
-            /*
             if (this.tilt.gravity) {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS ? this.tilt.temperature.C : this.tilt.temperature.F);
             }
-            */
-
-            /*
-            if (this.tilt.gravity) {
-                this.log('Setting ACI...');
-                this.accessoryInformation.setCharacteristic(Characteristic.SerialNumber, sprintf('SG %s', this.tilt.gravity));
-            }
-            */
 
 
         }
@@ -261,20 +252,6 @@ class TiltHydrometer {
 
     }
 
-    enableSerialNumber() {
-
-        var characteristic = this.service.getCharacteristic(Characteristic.SerialNumber);
-
-        characteristic.on('get', callback => {
-            this.log('GETTING serial NUMBER');
-            callback(null, 'KALLE');
-        });
-
-        characteristic.on('set', (value, callback) => {
-            this.log('SETTING serial NUMBER', value);
-            callback(null);
-        });
-    }
 
 
     enableCurrentHeatingCoolingState() {
@@ -408,7 +385,14 @@ class TiltHydrometer {
 
     getServices() {
 
-        return [this.accessoryInformation, this.service];
+        const service = new Service.AccessoryInformation();
+
+        service.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
+        service.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
+        service.setCharacteristic(Characteristic.SerialNumber, '1.0');
+
+
+        return [service, this.service];
     }
 
 }
