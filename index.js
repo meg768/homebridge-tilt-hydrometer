@@ -123,6 +123,7 @@ class TiltHydrometer {
 
         this.timer = setTimeout(() => {
             if (this.payload.temperature) {
+                this.log(this.payload);
                 var temperature = this.payload.temperature;
 
                 if (this.temperatureDisplayUnits == Characteristic.TemperatureDisplayUnits.CELSIUS)
@@ -196,6 +197,7 @@ class TiltHydrometer {
             calls.forEach((call, index) => {
                 call.options = Object.assign({debug:true}, call.options);
 
+                this.log('Making request:', call.url);
                 var request = new Request(call.url);
 
                 request.request(call.options).then(() => {})
