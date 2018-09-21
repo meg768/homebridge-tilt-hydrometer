@@ -211,7 +211,7 @@ class TiltHydrometer {
     }
 
 
-    updateSystem(alwaysFireRequests) {
+    updateSystem() {
 
         console.log('Updating system...');
 
@@ -225,7 +225,7 @@ class TiltHydrometer {
             state = Characteristic.CurrentHeatingCoolingState.OFF;
         }
 
-        if (alwaysFireRequests || state != this.currentHeatingCoolingState) {
+        if (state != this.currentHeatingCoolingState) {
             if (state == Characteristic.CurrentHeatingCoolingState.OFF) {
                 this.log('Turning off since current temperature is', this.currentTemperature);
             };
@@ -236,7 +236,6 @@ class TiltHydrometer {
                 this.log('Turning on cool since current temperature is', this.currentTemperature);
             };
 
-            this.currentHeatingCoolingState = state;
             this.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, state);
         }
 
@@ -291,7 +290,8 @@ class TiltHydrometer {
         currentTemperature.on('set', (value, callback) => {
             this.log('Temperature set to', value);
             this.currentTemperature = value;
-            this.updateSystem(true);
+            this.updateSystem();
+            this.fireRequests();
             callback(null);
         });
     }
