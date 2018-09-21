@@ -124,7 +124,8 @@ class TiltHydrometer {
                 this.service.setCharacteristic(Characteristic.CurrentTemperature, temperature);
             }
 
-            this.timer = setTimeout(this.restartTiltTimer.bind(this), 30000);
+            // Return in 15 minutes
+            this.timer = setTimeout(this.restartTiltTimer.bind(this), 15 * 60000);
 
         }
         else {
