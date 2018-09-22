@@ -4,6 +4,29 @@ var Path = require('path');
 var fs = require('fs');
 
 
+var mkpath = module.exports.mkpath = function (path, mode) {
+
+    path = Path.resolve(path);
+
+    if (typeof mode === 'undefined')
+        mode = 0777 & (~process.umask());
+
+    try {
+        if (!fs.statSync(path).isDirectory()) {
+            throw new Error(path + ' exists and is not a directory');
+        }
+    }
+    catch (error) {
+		if (error.code === 'ENOENT') {
+			mkpath(Path.dirname(path), mode);
+			fs.mkdirSync(path, mode);
+		}
+		else {
+			throw error;
+		}
+	}
+};
+
 var fileExists = module.exports.fileExists = function(path) {
 
 	try {
@@ -17,6 +40,8 @@ var fileExists = module.exports.fileExists = function(path) {
 }
 
 function install() {
+
+    mkpath(Path.join(process.env.HOME, '.homebridge'));
 
     var homebridgeConfig = Path.join(process.env.HOME, '.homebridge/config.json');
     var thisConfig = Path.join('.', 'config.json');
