@@ -3,6 +3,7 @@
 var Path = require('path');
 var fs   = require('fs');
 
+
 function install() {
 
     var homebridgeConfig = Path.join(process.env.HOME, '.homebridge/config.json');
@@ -17,30 +18,36 @@ function install() {
     if (!homebridge.platforms)
         homebridge.platforms = [];
 
-    config.accessories.forEach((accessory) => {
+    if (config.accessories) {
+        config.accessories.forEach((accessory) => {
 
-        // Remove existing
-        homebridge.accessories = homebridge.accessories.filter((item) => {
-            return item.accessory.toLowerCase() != accessory.accessory.toLowerCase();
+            // Remove existing
+            homebridge.accessories = homebridge.accessories.filter((item) => {
+                return item.accessory.toLowerCase() != accessory.accessory.toLowerCase();
+            });
+
+            // And add this one
+            homebridge.accessories.push(accessory);
+
         });
 
-        // And add this one
-        homebridge.accessories.push(accessory);
+    }
 
-    });
+    if (config.platforms) {
+        config.platforms.forEach((platform) => {
 
-    config.platforms.forEach((platform) => {
+            // Remove existing platform from homebridge
+            homebridge.platforms = homebridge.platforms.filter((item) => {
+                return item.platform.toLowerCase() != platform.platform.toLowerCase();
+            });
 
-        // Remove existing platform from homebridge
-        homebridge.platforms = homebridge.platforms.filter((item) => {
-            return item.platform.toLowerCase() != platform.platform.toLowerCase();
+            // And add this one
+            homebridge.platforms.push(platform);
+
         });
 
-        // And add this one
-        homebridge.platforms.push(platform);
 
-    });
-
+    }
 
     fs.writeFileSync(homebridgeConfig, JSON.stringify(homebridge, null, '    '));
 }

@@ -1,50 +1,58 @@
+
 {
     "bridge": {
         "name": "Homebridge",
-        "username": "CC:22:3D:E3:CE:30",
+        "username": "CC:22:3D:E6:CE:70",
         "port": 51826,
-        "pin": "031-45-154"
+        "pin": "031-45-159"
     },
 
     "description": "Sample",
 
-    "accessories": [{
-            "accessory": "Tilt Hydrometer",
-            "name": "Green Tilt",
-            "color": "green",
-            "state": {
-                "off": [{
-                    "url": "http://pi-tellstick:3000/devices/BKB",
-                    "options": {
+    "platforms": [{
+        "platform": "Tilt Hydrometer",
+        "name": "Tilt Hydrometer",
+        "tilts": [
+            {
+                "color": "green",
+                "name": "Green Tilt",
+                "state": {
+                    "off": [{
                         "method": "PUT",
-                        "query": {
-                            "state": "OFF"
-                        }
-                    }
-                }],
-                "heat": [{
-                    "url": "http://pi-tellstick:3000/devices/BKB",
-                    "options": {
+                        "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
+                    }],
+                    "heat": [{
                         "method": "PUT",
-                        "query": {
-                            "state": "OFF"
-                        }
-                    }
-                }],
-                "cool": [{
-                    "url": "http://pi-tellstick:3000/devices/BKB",
-                    "options": {
+                        "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
+                    }],
+                    "cool": [{
                         "method": "PUT",
-                        "query": {
-                            "state": "ON"
-                        }
-                    }
-                }]
+                        "url": "http://pi-tellstick:3000/devices/BKB?state=ON"
+                    }]
+                }
+
+            },
+            {
+                "color": "orange",
+                "name": "Orange Tilt",
+                "state": {
+                    "off": [{
+                        "method": "PUT",
+                        "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
+                    }],
+                    "heat": [{
+                        "method": "PUT",
+                        "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
+                    }],
+                    "cool": [{
+                        "method": "PUT",
+                        "url": "http://pi-tellstick:3000/devices/BKB?state=ON"
+                    }]
+                }
+
             }
 
-        }
+        ]
+    }]
 
-    ],
-
-    "platforms": []
 }
