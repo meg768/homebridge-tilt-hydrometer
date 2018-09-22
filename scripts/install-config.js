@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 var Path = require('path');
-var fs   = require('fs');
-
+var fs = require('fs');
 
 function install() {
 
