@@ -63,7 +63,7 @@ module.exports = class Tilt extends Events  {
         this.enableTargetHeatingCoolingState();
         this.enableCurrentTemperature();
         this.enableTargetTemperature();
-        this.enableDisplayUnits();
+        // this.enableDisplayUnits();
         this.enableCoolingThresholdTemperature();
         this.enableHeatingThresholdTemperature();
 
