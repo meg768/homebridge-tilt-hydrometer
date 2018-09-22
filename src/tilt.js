@@ -59,10 +59,6 @@ module.exports = class Tilt extends Events  {
 
         this.service = new Service.Thermostat(this.name);
 
-        this.service.getCharacteristic(Characteristic.Name).on('get', callback => {
-            callback(null, this.name);
-        });
-
         this.enableCurrentHeatingCoolingState();
         this.enableTargetHeatingCoolingState();
         this.enableCurrentTemperature();
