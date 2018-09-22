@@ -3,13 +3,33 @@
 var Path = require('path');
 var fs = require('fs');
 
+
+var fileExists = module.exports.fileExists = function(path) {
+
+	try {
+		fs.accessSync(path);
+		return true;
+	}
+	catch (error) {
+	}
+
+	return false;
+}
+
 function install() {
 
     var homebridgeConfig = Path.join(process.env.HOME, '.homebridge/config.json');
     var thisConfig = Path.join('.', 'config.json');
 
-    var homebridge = JSON.parse(fs.readFileSync(homebridgeConfig));
+    var homebridge = {};
     var config = JSON.parse(fs.readFileSync(thisConfig));
+
+    if (fileExists(homebridgeConfig)) {
+        homebridge = JSON.parse(fs.readFileSync(homebridgeConfig));
+    }
+
+    if (!homebridge.bridge)
+        homebridge.bridge = config.bridge;
 
     if (!homebridge.accessories)
         homebridge.accessories = [];
