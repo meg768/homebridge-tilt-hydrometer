@@ -28,6 +28,7 @@
   "dependencies": {
     "bleacon": "^0.5.1",
     "dotenv": "^6.0.0",
+    "pushover-notifications": "^1.0.0",
     "yow": "^1.0.95"
   }
 }

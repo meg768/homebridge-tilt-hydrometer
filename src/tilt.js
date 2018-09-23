@@ -25,6 +25,7 @@ module.exports = class Tilt extends Events  {
         super();
 
         this.log = platform.log;
+        this.pushover = platform.pushover;
         this.config = config;
         this.name = config.name;
         this.tiltTimer = new Timer();
@@ -230,15 +231,23 @@ module.exports = class Tilt extends Events  {
         }
 
         if (state != this.currentHeatingCoolingState) {
-            if (state == Characteristic.CurrentHeatingCoolingState.OFF) {
-                this.log('Turning off since current temperature is', this.currentTemperature);
-            };
-            if (state == Characteristic.CurrentHeatingCoolingState.HEAT) {
-                this.log('Turning on heat since current temperature is', this.currentTemperature);
-            };
-            if (state == Characteristic.CurrentHeatingCoolingState.COOL) {
-                this.log('Turning on cool since current temperature is', this.currentTemperature);
-            };
+            switch (state) {
+                case Characteristic.CurrentHeatingCoolingState.OFF: {
+                    this.log('Turning off since current temperature is', this.currentTemperature);
+                    this.pushover('Turning thermostat off.');
+                    break;
+                }
+                case Characteristic.CurrentHeatingCoolingState.HEAT: {
+                    this.log('Turning on heat since current temperature is', this.currentTemperature);
+                    this.pushover('Thermostat set to heat.');
+                    break;
+                }
+                case Characteristic.CurrentHeatingCoolingState.COOL: {
+                    this.log('Turning on cool since current temperature is', this.currentTemperature);
+                    this.pushover('Thermostat set to cool.');
+                    break;
+                }
+            }
 
             this.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, state);
         }
