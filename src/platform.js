@@ -35,25 +35,26 @@ module.exports = class Platform {
     }
 
 
-    pushover() {
+    pushover(payload) {
 
-        var util    = require('util');
-    	var user    = process.env.PUSHOVER_USER;
-    	var token   = process.env.PUSHOVER_TOKEN;
-        var message = util.format.apply(util.format, arguments);
+        var Pushover = require('pushover-notifications');
+    	var user     = process.env.PUSHOVER_USER;
+    	var token    = process.env.PUSHOVER_TOKEN;
 
-    	if (process.env.PUSHOVER_USER && process.env.PUSHOVER_TOKEN) {
+    	if (user && token) {
 			try {
+                payload = Object.assign({priority:0}, payload);
 
-                var PushoverNotifications = require('pushover-notifications');
-				var push = new PushoverNotifications({user:user, token:token});
-                var payload = {priority:0, message:message};
+                if (payload.message && payload.message.length > 0) {
+    				var push = new Pushover({user:user, token:token});
 
-				push.send(payload, function(error, result) {
-					if (error) {
-						this.log(error.stack);
-					}
-				});
+    				push.send(payload, function(error, result) {
+    					if (error) {
+    						this.log(error.stack);
+    					}
+    				});
+
+                }
 			}
 			catch(error) {
 				this.log('Failed to send Pushover notification.', error.message);

@@ -16,16 +16,23 @@
             {
                 "color": "green",
                 "name": "Green Tilt",
-                "state": {
-                    "off": [{
+
+                "notifications": {
+                    "OFF" : "Uppnått rätt temperatur.",
+                    "HEAT": "Temperaturen är för låg.",
+                    "COOL": "Temperaturen är för hög."
+                },
+
+                "requests": {
+                    "OFF": [{
                         "method": "PUT",
                         "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
                     }],
-                    "heat": [{
+                    "HEAT": [{
                         "method": "PUT",
                         "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
                     }],
-                    "cool": [{
+                    "COOL": [{
                         "method": "PUT",
                         "url": "http://pi-tellstick:3000/devices/BKB?state=ON"
                     }]
@@ -35,22 +42,30 @@
             {
                 "color": "orange",
                 "name": "Orange Tilt",
-                "state": {
-                    "off": [{
+
+                "notifications": {
+                    "OFF" : "Uppnått rätt temperatur.",
+                    "HEAT": "Temperaturen är för låg.",
+                    "COOL": "Temperaturen är för hög."
+                },
+
+                "requests": {
+                    "OFF": [{
                         "method": "PUT",
                         "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
                     }],
-                    "heat": [{
+                    "HEAT": [{
                         "method": "PUT",
                         "url": "http://pi-tellstick:3000/devices/BKB?state=OFF"
                     }],
-                    "cool": [{
+                    "COOL": [{
                         "method": "PUT",
                         "url": "http://pi-tellstick:3000/devices/BKB?state=ON"
                     }]
                 }
 
             }
+
 
         ]
     }]

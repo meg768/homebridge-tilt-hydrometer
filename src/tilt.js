@@ -165,45 +165,48 @@ module.exports = class Tilt extends Events  {
 
         // Send the requests with a delay so it doesn't get called so often
         this.requestTimer.setTimer(2000, () => {
-            var calls = undefined;
+            var requests = undefined;
 
             // Be silent if turned off
             if (this.targetHeatingCoolingState == Characteristic.TargetHeatingCoolingState.OFF)
                 return;
 
+            if (!this.config.requests)
+                return;
+
             switch (this.currentHeatingCoolingState) {
                 case Characteristic.CurrentHeatingCoolingState.OFF:
                     {
-                        calls = this.config.state.off;
+                        requests = this.config.requests.OFF;
                         break;
                     };
                 case Characteristic.CurrentHeatingCoolingState.HEAT:
                     {
-                        calls = this.config.state.heat;
+                        requests = this.config.requests.HEAT;
                         break;
                     };
                 case Characteristic.CurrentHeatingCoolingState.COOL:
                     {
-                        calls = this.config.state.cool;
+                        requests = this.config.requests.COOL;
                         break;
                     };
             }
 
-            if (calls != undefined && !isArray(calls))
-                calls = [calls];
+            if (requests != undefined && !isArray(requests))
+                requests = [requests];
 
-            if (isArray(calls)) {
+            if (isArray(requests)) {
 
-                calls.forEach((call, index) => {
+                requests.forEach((request, index) => {
 
-                    var url = call.url;
-                    var options = Object.assign({debug:true}, isString(call.method) ? {method:call.method} : {}, call.options);
+                    var url = request.url;
+                    var options = Object.assign({}, isString(request.method) ? {method:request.method} : {}, request.options);
 
                     this.log('Making request:', url, JSON.stringify(options));
 
-                    var request = new Request(url);
+                    var httpRequest = new Request(url);
 
-                    request.request(options).then(() => {
+                    httpRequest.request(options).then(() => {
 
                     })
                     .catch((error) => {
@@ -230,23 +233,29 @@ module.exports = class Tilt extends Events  {
             state = Characteristic.CurrentHeatingCoolingState.OFF;
         }
 
+        var notification = null;
+
         if (state != this.currentHeatingCoolingState) {
             switch (state) {
                 case Characteristic.CurrentHeatingCoolingState.OFF: {
-                    this.log('Turning off since current temperature is', this.currentTemperature);
-                    this.pushover('Turning thermostat off.');
+                    this.log('Turning off since current temperature is', this.currentTemperature, '.');
+                    notification = this.config.notifications ? this.config.notifications.OFF : null;
                     break;
                 }
                 case Characteristic.CurrentHeatingCoolingState.HEAT: {
-                    this.log('Turning on heat since current temperature is', this.currentTemperature);
-                    this.pushover('Thermostat set to heat.');
+                    this.log('Turning on heat since current temperature is', this.currentTemperature, '.');
+                    notification = this.config.notifications ? this.config.notifications.HEAT : null;
                     break;
                 }
                 case Characteristic.CurrentHeatingCoolingState.COOL: {
-                    this.log('Turning on cool since current temperature is', this.currentTemperature);
-                    this.pushover('Thermostat set to cool.');
+                    this.log('Turning on cool since current temperature is', this.currentTemperature, '.');
+                    notification = this.config.notifications ? this.config.notifications.COOL : null;
                     break;
                 }
+            }
+
+            if (notification) {
+                this.pushover({title:this.name, message:notification});
             }
 
             this.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, state);
