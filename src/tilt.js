@@ -113,7 +113,7 @@ module.exports = class Tilt extends Events  {
 
         if (this.tilt) {
             // Return in 15 minutes
-            this.tiltTimer.setTimer(15 * 60000, this.restartTiltTimer.bind(this));
+            this.tiltTimer.setTimer(1 * 60000, this.restartTiltTimer.bind(this));
 
             this.log('Tilt:', JSON.stringify(this.tilt));
 
