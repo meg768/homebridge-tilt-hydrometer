@@ -1,2 +1,2 @@
-# homebridge-tilt-hydrometer
-Homebridge plugin for Tilt hydrometer
+# homebridge-tilt-thermostat
+Homebridge plugin for Tilt Hydrometer to act as a thermostat for homebrewers.

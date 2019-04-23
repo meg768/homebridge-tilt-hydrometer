@@ -399,7 +399,7 @@ module.exports = class Tilt extends Events  {
         const service = new Service.AccessoryInformation();
 
         service.setCharacteristic(Characteristic.Manufacturer, 'Tilt');
-        service.setCharacteristic(Characteristic.Model, 'Tilt Hydrometer');
+        service.setCharacteristic(Characteristic.Model, 'Tilt Thermostat');
         service.setCharacteristic(Characteristic.SerialNumber, '1.0');
 
 

@@ -1,5 +1,5 @@
 {
-  "name": "homebridge-tilt-hydrometer",
+  "name": "homebridge-tilt-thermostat",
   "version": "1.0.0",
   "description": "Homebridge plugin for Tilt hydrometer",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meg768/homebridge-tilt-hydrometer.git"
+    "url": "git+https://github.com/meg768/homebridge-tilt-thermostat.git"
   },
   "engines": {
     "node": ">=6.11.0",
@@ -18,14 +18,15 @@
   "keywords": [
     "homebridge-plugin",
     "Tilt Hydrometer",
+    "Tilt Thermostat",
     "homebridge"
   ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/meg768/homebridge-tilt-hydrometer/issues"
+    "url": "https://github.com/meg768/homebridge-tilt-thermostat/issues"
   },
-  "homepage": "https://github.com/meg768/homebridge-tilt-hydrometer#readme",
+  "homepage": "https://github.com/meg768/homebridge-tilt-thermostat#readme",
   "dependencies": {
     "bleacon": "^0.5.1",
     "dotenv": "^6.0.0",

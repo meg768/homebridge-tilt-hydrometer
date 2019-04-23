@@ -9,5 +9,5 @@ module.exports = function(homebridge) {
     Homebridge.Service = homebridge.hap.Service;
     Homebridge.Characteristic = homebridge.hap.Characteristic;
 
-    homebridge.registerPlatform('homebridge-tilt-hydrometer', 'Tilt Hydrometer', require('./src/platform.js'));
+    homebridge.registerPlatform('homebridge-tilt-thermostat', 'Tilt Thermostat', require('./src/platform.js'));
 };

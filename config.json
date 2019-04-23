@@ -1,7 +1,7 @@
 
 {
     "bridge": {
-        "name": "Tilt Hydrometer Bridge",
+        "name": "Tilt Thermostat Bridge",
         "username": "CC:22:3D:E6:CE:70",
         "port": 51826,
         "pin": "031-45-159"
@@ -10,8 +10,8 @@
     "description": "Sample configuration file",
 
     "platforms": [{
-        "platform": "Tilt Hydrometer",
-        "name": "Tilt Hydrometer",
+        "platform": "Tilt Thermostat",
+        "name": "Tilt Thermostat",
         "tilts": [
             {
                 "color": "green",
