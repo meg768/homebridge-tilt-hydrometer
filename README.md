@@ -9,4 +9,4 @@ Homebridge plugin for Tilt Hydrometer to act as a thermostat for homebrewers.
 * sudo npm config set unsafe-perm true
 * sudo npm install homebridge -g
 * sudo apt install git
-* git clone 
+* git clone https://github.com/meg768/homebridge-tilt-thermostat.git
