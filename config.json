@@ -2,9 +2,9 @@
 {
     "bridge": {
         "name": "Tilt Thermostat Bridge",
-        "username": "CC:22:3D:E6:CE:71",
+        "username": "CC:22:3D:E6:CE:72",
         "port": 51826,
-        "pin": "031-45-159"
+        "pin": "031-45-160"
     },
 
     "description": "Sample configuration file",
