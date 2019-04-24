@@ -9,7 +9,7 @@ config:
 	node ./scripts/install-config.js
 
 install:
-	npm install -g
+	npm install -g --unsafe-perm 
 
 undo:
 	git reset --hard HEAD
